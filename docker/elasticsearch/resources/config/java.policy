@@ -1,0 +1,7 @@
+grant {
+    // Sudachiプラグインのアクセス許可
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.misc";
+    permission java.lang.RuntimePermission "accessClassInPackage.nio.ch";
+    permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal.ref";
+    permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal.misc";
+};

@@ -1,0 +1,107 @@
+include:
+  # ------------------------------------
+  # DB:MySQL(172.21.0.3)
+  # ------------------------------------
+  - path: ./docker/db/mysql/compose.yml
+    env_file: ./docker/db/mysql/mysql-server-variables.env
+  # ------------------------------------
+  # Elasticsearch(172.22.0.2)
+  # Kibana(172.22.0.3)
+  - path: ./docker/elasticsearch/compose.yml
+    env_file: ./docker/elasticsearch/es-server-variables.env
+  # ------------------------------------
+  # END OF INCLUDE
+  # ------------------------------------
+services:
+  portainer:
+    image: portainer/portainer-ce:alpine
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - 9000:9000
+      - 9443:9443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${PWD}/docker/portainer_data:/data
+    restart: always
+
+  serena-mcp:
+    build: 
+      context: ./docker/serena_mcp
+    container_name: serena_mcp
+    network_mode: "bridge"
+    restart: unless-stopped
+    ports:
+      - "24282:24282"  # Dashboard port (default 0x5EDA = 24282)
+    volumes:
+      - ${PWD}/docker/serena_mcp/serena_data:/workspaces/serena/config
+      - ${PWD}/pdev:/workspaces/pdev
+    environment:
+      - SERENA_DOCKER=1
+      - SERENA_DASHBOARD_PORT=24282
+      - DOTNET_VERSION=9.0
+      - GO_VERSION=1.24.4
+    stdin_open: true
+    tty: true
+    command:
+      - "uv"
+      - "run"
+      - "--directory"
+      - "."
+      - "serena-mcp-server"
+      - "--transport"
+      - "stdio"
+      - "--project"
+      - "/workspaces/pdev"  # コンテナ内でマウントしているプロジェクトのパス
+  # ------------------------------------
+  # END OF SERVICE
+  # ------------------------------------
+volumes:
+  serena_data:
+    driver: local
+  # ------------------------------------
+  # END OF SERVICE
+  # ------------------------------------
+networks:
+  default:
+     driver: bridge
+     ipam:
+       driver: default
+       config:
+         - subnet: 172.18.0.0/16
+           gateway: 172.18.0.1
+  front_network:
+     driver: bridge
+     ipam:
+       driver: default
+       config:
+         - subnet: 172.19.0.0/16
+           gateway: 172.19.0.1
+  app_network:
+     driver: bridge
+     ipam:
+       driver: default
+       config:
+         - subnet: 172.20.0.0/16
+           gateway: 172.20.0.1
+  db_network:
+     driver: bridge
+     ipam:
+       driver: default
+       config:
+         - subnet: 172.21.0.0/16
+           gateway: 172.21.0.1
+  es_network:
+     driver: bridge
+     ipam:
+       driver: default
+       config:
+         - subnet: 172.22.0.0/16
+           gateway: 172.22.0.1
+  backend_network:
+     driver: bridge
+     ipam:
+       driver: default
+       config:
+         - subnet: 172.24.0.0/16
+           gateway: 172.24.0.1

@@ -1,0 +1,23 @@
+services:
+  mysql:
+    build: 
+      context: .
+    # image: mysql:8.0.14
+    container_name: mysql-server
+    command: --lower_case_table_names=1
+    restart: always
+    ports: 
+      - $DB_PORT_HOST:$DB_PORT_CONTAINER
+    environment:
+      MYSQL_ROOT_PASSWORD: $DB_ROOT_PASS
+      MYSQL_DATABASE: $DB_NAME
+      MYSQL_USER: $DB_USER
+      MYSQL_PASSWORD: $DB_PASS
+      TZ: $TZ
+      LANG: $LANG
+    volumes:
+      - ./mysql_data/data:/var/lib/mysql
+      - ./mysql_data/log:/var/log/mysql
+    networks:
+      db_network:
+         ipv4_address: 172.21.0.3

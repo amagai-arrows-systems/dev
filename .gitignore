@@ -1,0 +1,25 @@
+# portainer
+/docker/portainer_data/*
+
+# mysqlのデータは、リポジトリに含めない
+/docker/db/mysql/mysql_data/data/*
+/docker/db/mysql/mysql_data/log/*
+
+# serena_mcpのインストールで失敗したファイルは、リポジトリに含めない
+/docker/serena_mcp/config_bk2026022817:00:03/*
+# serena_mcpのlanguage_servers/logs/prompt_templatesは、
+# インストール後に生成されるファイルであるため、リポジトリに含めない
+/docker/serena_mcp/serena_data/language_servers/*
+/docker/serena_mcp/serena_data/logs/*
+/docker/serena_mcp/serena_data/prompt_templates/*
+
+# pdev配下は別リポジトリ
+/pdev/*
+# tmp配下は一時ファイル
+/tmp/*
+
+# .gitkeepは必要
+!/pdev/.gitkeep
+!/docker/db/mysql/mysql_data/data/.gitkeep
+!/docker/db/mysql/mysql_data/log/.gitkeep
+!/docker/portainer_data/.gitkeep

@@ -1,0 +1,32 @@
+services:
+  es:
+    build: 
+      context: .
+    container_name: $CONTAINER_NAME
+    restart: always
+    ports: 
+      - $ES_PORT_HOST:$ES_PORT_CONTAINER
+      - $ES_MANAGE_PORT_HOST:$ES_MANAGE_PORT_CONTAINER
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      es_network:
+          ipv4_address: 172.22.0.2
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.14.3
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+    networks:
+      es_network:
+          ipv4_address: 172.22.0.3
+volumes:
+  esdata:
