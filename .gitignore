@@ -14,7 +14,7 @@
 /docker/serena_mcp/serena_data/prompt_templates/*
 
 # pdev配下は別リポジトリ
-/pdev/*
+pdev/*
 # tmp配下は一時ファイル
 /tmp/*
 
