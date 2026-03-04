@@ -33,14 +33,18 @@ services:
     restart: unless-stopped
     ports:
       - "24282:24282"  # Dashboard port (default 0x5EDA = 24282)
-    volumes:
-      - ${PWD}/docker/serena_mcp/serena_data:/workspaces/serena/config
-      - ${PWD}/pdev:/workspaces/pdev
+      - "8000:8000"    # 【追加】LM Studio/VS Code 接続用
     environment:
+      - TZ=Asia/Tokyo          # タイムゾーンを指定
       - SERENA_DOCKER=1
       - SERENA_DASHBOARD_PORT=24282
       - DOTNET_VERSION=9.0
       - GO_VERSION=1.24.4
+    volumes:
+      - /etc/localtime:/etc/localtime:ro  # ホスト(wsl)の時刻設定を読み取り専用で共有
+      - /etc/timezone:/etc/timezone:ro    # タイムゾーン情報を共有
+      - ${PWD}/docker/serena_mcp/serena_data:/workspaces/serena/config
+      - ${PWD}/pdev:/workspaces/pdev
     stdin_open: true
     tty: true
     command:
@@ -50,9 +54,12 @@ services:
       - "."
       - "serena-mcp-server"
       - "--transport"
-      - "stdio"
+      - "sse"          # stdio から sse に変更
+      - "--port"
+      - "8000"         # SSEの待ち受けポートを指定
       - "--project"
       - "/workspaces/pdev"  # コンテナ内でマウントしているプロジェクトのパス
+  
   # ------------------------------------
   # END OF SERVICE
   # ------------------------------------
