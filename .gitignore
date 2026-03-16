@@ -1,6 +1,9 @@
 # portainer
 /docker/portainer_data/*
 
+# Dockerfileのバックアップはリポジトリに含めない
+/docker/*/Dockerfile_*
+
 # mysqlのデータは、リポジトリに含めない
 /docker/db/mysql/mysql_data/data/*
 /docker/db/mysql/mysql_data/log/*

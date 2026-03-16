@@ -1,0 +1,8 @@
+name: DEV MCP server
+version: 0.0.1
+schema: v1
+mcpServers:
+  - name: serena
+    type: streamable-http
+    url: http://localhost:32000/mcp
+    env: {}
